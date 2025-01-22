@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SECRET! });
 
 export async function POST(request: Request) {
-    const { breeds = null, type = null, size = null, location = null, gender = null, age = null } = await request.json();
+    const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null } = await request.json();
     const searchParamsObject: any = {
         limit: 100,
     };
@@ -37,6 +37,10 @@ export async function POST(request: Request) {
         searchParamsObject.age = age;
     }
 
+    if (color) {
+        searchParamsObject.color = color;
+    }
+
     const pets = await client.animal.search(
         searchParamsObject
     )
@@ -57,6 +61,7 @@ export async function POST(request: Request) {
             breed: animal.breeds.primary,
             type: animal.type,
             id: animal.id,
+            color: animal.colors.primary,
         }
     })
 
