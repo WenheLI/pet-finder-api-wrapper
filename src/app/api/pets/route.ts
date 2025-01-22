@@ -5,15 +5,9 @@ export const runtime = 'nodejs';
 // load env variables
 
 const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SECRET! });
- 
-export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url);
-    const breeds = searchParams.get('breeds');
-    const type = searchParams.get('type');
-    const size = searchParams.get('size');
-    const location = searchParams.get('location');
-    const gender = searchParams.get('gender'); // can only be 'male' or 'female', or 'unknown'
-    const age = searchParams.get('age'); // age can only be 'baby', 'young', 'adult', or 'senior'
+
+export async function POST(request: Request) {
+    const { breeds = null, type = null, size = null, location = null, gender = null, age = null } = await request.json();
     const searchParamsObject: any = {
         limit: 100,
     };

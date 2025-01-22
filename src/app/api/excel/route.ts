@@ -44,7 +44,8 @@ export async function POST(request: Request) {
     ]
     introductionWorksheet.addRow({ text: data.introduction });
 
-    return new Response(await workbook.xlsx.writeBuffer(), {
-        headers: { 'Content-Disposition': 'attachment; filename="progress-tracker.xlsx"' },
-    });
+    const base64Excel = await workbook.xlsx.writeBuffer();
+    //@ts-ignore
+    const base64ExcelString = base64Excel.toString('base64');
+    return Response.json({ base64ExcelString });
 }
