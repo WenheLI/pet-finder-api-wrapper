@@ -7,9 +7,16 @@ export const runtime = 'nodejs';
 const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SECRET! });
 
 export async function POST(request: Request) {
-    const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null } = await request.json();
+    const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20 } = await request.json();
+    // also parse the page size from url: /api/pets?pageSize=20
+    const url = new URL(request.url);
+    const pageSizeFromUrl = url.searchParams.get('pageSize');
+    let parsedPageSize = null;
+    if (pageSizeFromUrl) {
+        parsedPageSize = parseInt(pageSizeFromUrl);
+    }
     const searchParamsObject: any = {
-        limit: 100,
+        limit: parsedPageSize || pageSize
     };
 
 
