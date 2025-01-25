@@ -8,6 +8,8 @@ const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SE
 
 export async function POST(request: Request) {
     const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20 } = await request.json();
+    // logging the request
+    console.log(`Request: breeds: ${breeds}, type: ${type}, size: ${size}, location: ${location}, gender: ${gender}, age: ${age}, color: ${color}, pageSize: ${pageSize}`);
     // also parse the page size from url: /api/pets?pageSize=20
     const url = new URL(request.url);
     const pageSizeFromUrl = url.searchParams.get('pageSize');
