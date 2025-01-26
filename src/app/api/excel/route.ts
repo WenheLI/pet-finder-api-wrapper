@@ -1,5 +1,6 @@
 import { Workbook } from 'exceljs';
 import { Client } from '@petfinder/petfinder-js';
+import { Jsonic } from 'jsonic'
 
 export const dynamic = 'force-dynamic'; // static by default, unless reading the request
 export const runtime = 'nodejs';
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
         console.log(data);
         parsedData = data.replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, '').replace(/\\n/g, '').replace(/\\t/g, '').trim();
         parsedData = parsedData.slice(1, -1);
-        parsedData = JSON.parse(parsedData.replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, '').replace(/\\n/g, '').replace(/\\t/g, ''));
+        parsedData = Jsonic.parse(parsedData);
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }

@@ -15,10 +15,11 @@ export async function POST(request: Request) {
     let parsedRequestBody = null;
     try {
         parsedRequestBody = JSON.parse(requestBody);
-        parsedRequestBody = JSON.parse(parsedRequestBody.replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, ''));
+        parsedRequestBody = JSON.parse(parsedRequestBody.replace(/'/g, '"').replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, ''));
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }
+    console.log(`Parsed Request: ${parsedRequestBody}, ${typeof parsedRequestBody}`);
     const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20, simpified = true } = parsedRequestBody;
     // logging the request
     console.log(`Request: breeds: ${breeds}, type: ${type}, size: ${size}, location: ${location}, gender: ${gender}, age: ${age}, color: ${color}, pageSize: ${pageSize}`);
