@@ -7,8 +7,9 @@ const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SE
 
 export async function POST(request: Request) {
     // get data from the request
-    const data = await request.text();
-    let parsedData = await request.json();
+    let data = await request.text();
+    data = data.replaceAll('None', 'null');
+    let parsedData = null;  
     try {
         parsedData = JSON.parse(data);
     } catch (error) {

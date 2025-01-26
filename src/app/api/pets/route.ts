@@ -9,9 +9,10 @@ const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SE
 
 export async function POST(request: Request) {
     // logging the request
-    const requestBody = await request.text();
+    let requestBody = await request.text();
+    requestBody = requestBody.replaceAll('None', 'null');
     console.log(`Request: ${requestBody}`);
-    let parsedRequestBody = await request.json();
+    let parsedRequestBody = null;
     try {
         parsedRequestBody = JSON.parse(requestBody);
     } catch (error) {
