@@ -10,8 +10,10 @@ export async function POST(request: Request) {
     let data = await request.text();
     let parsedData = null;  
     try {
-        parsedData = JSON.parse(data);
-        parsedData = JSON.parse(parsedData.replace(/'/g, '"').replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, ''));
+        console.log(data);
+        parsedData = data.replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, '').replace(/\\n/g, '').replace(/\\t/g, '').trim();
+        parsedData = parsedData.slice(1, -1);
+        parsedData = JSON.parse(parsedData.replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, '').replace(/\\n/g, '').replace(/\\t/g, ''));
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }
@@ -28,6 +30,7 @@ export async function POST(request: Request) {
     //     ],
     //     introduction: 'This is a test introduction',
     // }
+    
     console.log(parsedData);
 
     const animalIds = parsedData.animals.map((animal: any) => animal.id);
@@ -37,13 +40,14 @@ export async function POST(request: Request) {
         return {
             name: animal.data.animal.name,
             photo: animal.data.animal.photos[0]?.full || null,
-            matchRate: parsedData.animals.find((thisAnimal: any) => animal.id === thisAnimal.id).matchRate,
-            whyMatch: parsedData.animals.find((thisAnimal: any) => animal.id === thisAnimal.id).whyMatch,
+            matchRate: parsedData.animals.find((thisAnimal: any) => animal.data.animal.id === thisAnimal.id).matchRate,
+            whyMatch: parsedData.animals.find((thisAnimal: any) => animal.data.animal.id === thisAnimal.id).whyMatch,
             location: animal.data.animal.contact.address.city,
             contact: animal.data.animal.contact.email,
             info: animal.data.animal.description,
             age: animal.data.animal.age,
-            progress: 'Pending'
+            sex: animal.data.animal.gender,
+            contacted: 'Pending'
         }
     })
 
@@ -59,9 +63,11 @@ export async function POST(request: Request) {
         { header: 'Info', key: 'info', width: 15 },
         { header: 'Location', key: 'location', width: 15 },
         { header: 'Contact', key: 'contact', width: 15 },
-        { header: 'Progress', key: 'progress', width: 15 },
+        { header: 'Contacted', key: 'contacted', width: 15 },
         { header: 'Why Match', key: 'whyMatch', width: 15 },
         { header: 'My Thoughts', key: 'myThoughts', width: 15 },
+        { header: 'Sex', key: 'sex', width: 15 },
+        { header: 'Age', key: 'age', width: 15 },
     ];
     for (const row of animalsData) {
         worksheet.addRow(row);

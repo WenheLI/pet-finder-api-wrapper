@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     let parsedRequestBody = null;
     try {
         parsedRequestBody = JSON.parse(requestBody);
-        parsedRequestBody = JSON.parse(parsedRequestBody.replace(/'/g, '"').replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, ''));
+        parsedRequestBody = JSON.parse(parsedRequestBody.replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, ''));
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }
