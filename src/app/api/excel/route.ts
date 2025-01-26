@@ -34,12 +34,11 @@ export async function POST(request: Request) {
     const animalsRequests = animalIds.map((id: number) => client.animal.show(id));
     const animals = await Promise.all(animalsRequests);
     const animalsData = animals.map((animal: any) => {
-        console.log(animal);
         return {
             name: animal.data.animal.name,
             photo: animal.data.animal.photos[0]?.full || null,
-            matchRate: parsedData.animals.find((animal: any) => animal.id === animal.id).matchRate,
-            whyMatch: parsedData.animals.find((animal: any) => animal.id === animal.id).whyMatch,
+            matchRate: parsedData.animals.find((thisAnimal: any) => animal.id === thisAnimal.id).matchRate,
+            whyMatch: parsedData.animals.find((thisAnimal: any) => animal.id === thisAnimal.id).whyMatch,
             location: animal.data.animal.contact.address.city,
             contact: animal.data.animal.contact.email,
             info: animal.data.animal.description,
