@@ -9,9 +9,15 @@ const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SE
 
 export async function POST(request: Request) {
     // logging the request
-    const requestBody = await request.json();
-    console.log(`Request: ${JSON.stringify(requestBody)}`);
-    const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20, simpified = true } = requestBody;
+    const requestBody = await request.text();
+    console.log(`Request: ${requestBody}`);
+    let parsedRequestBody = await request.json();
+    try {
+        parsedRequestBody = JSON.parse(requestBody);
+    } catch (error) {
+        console.error(`Error parsing request body: ${error}`);
+    }
+    const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20, simpified = true } = parsedRequestBody;
     // logging the request
     console.log(`Request: breeds: ${breeds}, type: ${type}, size: ${size}, location: ${location}, gender: ${gender}, age: ${age}, color: ${color}, pageSize: ${pageSize}`);
     // also parse the page size from url: /api/pets?pageSize=20

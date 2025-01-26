@@ -7,7 +7,13 @@ const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SE
 
 export async function POST(request: Request) {
     // get data from the request
-    const data = await request.json();
+    const data = await request.text();
+    let parsedData = await request.json();
+    try {
+        parsedData = JSON.parse(data);
+    } catch (error) {
+        console.error(`Error parsing request body: ${error}`);
+    }
     // data should be
     // {
     //     animals: [
@@ -16,19 +22,20 @@ export async function POST(request: Request) {
     //             matchRate: 0.8,
     //             whyMatch: 'This is a test why match',
     //         }
-    //     ]
+    //     ],
+    //     introduction: 'This is a test introduction',
     // }
-    console.log(data);
+    console.log(parsedData);
 
-    const animalIds = data.animals.map((animal: any) => animal.id);
+    const animalIds = parsedData.animals.map((animal: any) => animal.id);
     const animalsRequests = animalIds.map((id: number) => client.animal.show(id));
     const animals = await Promise.all(animalsRequests);
     const animalsData = animals.map((animal: any) => {
         return {
             name: animal.data.animal.name,
             photo: animal.data.animal.photos[0].full,
-            matchRate: data.animals.find((animal: any) => animal.id === animal.id).matchRate,
-            whyMatch: data.animals.find((animal: any) => animal.id === animal.id).whyMatch,
+            matchRate: parsedData.animals.find((animal: any) => animal.id === animal.id).matchRate,
+            whyMatch: parsedData.animals.find((animal: any) => animal.id === animal.id).whyMatch,
             location: animal.data.animal.contact.address.city,
             contact: animal.data.animal.contact.email,
             info: animal.data.animal.description,
@@ -73,7 +80,7 @@ export async function POST(request: Request) {
     introductionWorksheet.columns = [
         { header: 'Text', key: 'text', width: 15 },
     ]
-    introductionWorksheet.addRow({ text: data.introduction });
+    introductionWorksheet.addRow({ text: parsedData.introduction });
 
     const base64Excel = await workbook.xlsx.writeBuffer();
     //@ts-ignore
