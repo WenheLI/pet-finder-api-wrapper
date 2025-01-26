@@ -15,6 +15,8 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }
+    const url = new URL(request.url);
+    const debugFromUrl = url.searchParams.get('debug');
     // data should be
     // {
     //     animals: [
@@ -84,14 +86,18 @@ export async function POST(request: Request) {
     introductionWorksheet.addRow({ text: parsedData.introduction });
 
     const base64Excel = await workbook.xlsx.writeBuffer();
-    //@ts-ignore
-    const base64ExcelString = base64Excel.toString('base64');
-    return Response.json({ base64ExcelString });
-    // return the excel file
-    // return new Response(base64Excel, {
-    //     headers: {
-    //         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    //         'Content-Disposition': 'attachment; filename="progress-tracker.xlsx"',
-    //     },
-    // });
+    if (!debugFromUrl) {
+        //@ts-ignore
+        const base64ExcelString = base64Excel.toString('base64');
+        return Response.json({ base64ExcelString });
+    }
+    else {
+        // return the excel file
+        return new Response(base64Excel, {
+            headers: {
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': 'attachment; filename="progress-tracker.xlsx"',
+            },
+        });
+    }
 }
