@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }
+    console.log(`Parsed Request: ${parsedRequestBody}`);    
     const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20, simpified = true } = parsedRequestBody;
     // logging the request
     console.log(`Request: breeds: ${breeds}, type: ${type}, size: ${size}, location: ${location}, gender: ${gender}, age: ${age}, color: ${color}, pageSize: ${pageSize}`);
