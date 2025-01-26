@@ -1,4 +1,5 @@
 import { Client } from '@petfinder/petfinder-js';
+import { describe } from 'node:test';
 
 export const dynamic = 'force-dynamic'; // static by default, unless reading the request
 export const runtime = 'nodejs';
@@ -10,7 +11,7 @@ export async function POST(request: Request) {
     // logging the request
     const requestBody = await request.json();
     console.log(`Request: ${JSON.stringify(requestBody)}`);
-    const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20 } = requestBody;
+    const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20, simpified = true } = requestBody;
     // logging the request
     console.log(`Request: breeds: ${breeds}, type: ${type}, size: ${size}, location: ${location}, gender: ${gender}, age: ${age}, color: ${color}, pageSize: ${pageSize}`);
     // also parse the page size from url: /api/pets?pageSize=20
@@ -59,8 +60,15 @@ export async function POST(request: Request) {
 
     const allAnimals = pets.data.animals;
 
-    // process tne animal data
-    const processedAnimals = allAnimals.map((animal: any) => {
+    const simplifiedMapper = (animal: any) => {
+        return {
+            id: animal.id,
+            name: animal.name,
+            description: animal.description,
+        }
+    }
+
+    const detailedMapper = (animal: any) => {
         return {
             photo: animal.photos.map((photo: any) => photo.full),
             contact: animal.contact,
@@ -75,6 +83,11 @@ export async function POST(request: Request) {
             id: animal.id,
             color: animal.colors.primary,
         }
+    }
+
+    // process tne animal data
+    const processedAnimals = allAnimals.map((animal: any) => {
+        return simpified ? simplifiedMapper(animal) : detailedMapper(animal);
     })
 
     return Response.json(processedAnimals);
