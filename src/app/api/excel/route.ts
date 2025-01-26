@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         console.error(`Error parsing request body: ${error}`);
     }
     const url = new URL(request.url);
-    const debugFromUrl = url.searchParams.get('debug');
+    const debugFlag = url.searchParams.get('debug') ? true : false;
     // data should be
     // {
     //     animals: [
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     introductionWorksheet.addRow({ text: parsedData.introduction });
 
     const base64Excel = await workbook.xlsx.writeBuffer();
-    if (!debugFromUrl) {
+    if (!debugFlag) {
         //@ts-ignore
         const base64ExcelString = base64Excel.toString('base64');
         return Response.json({ base64ExcelString });
