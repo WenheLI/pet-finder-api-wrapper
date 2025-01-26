@@ -10,18 +10,19 @@ const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SE
 export async function POST(request: Request) {
     // logging the request
     let requestBody = await request.text();
-    requestBody = requestBody.replaceAll('None', 'null');
+
     console.log(`Request: ${requestBody}`);
     let parsedRequestBody = null;
     try {
         parsedRequestBody = JSON.parse(requestBody);
+        parsedRequestBody = JSON.parse(parsedRequestBody.replace(/'/g, '"').replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, ''));
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }
-    console.log(`Parsed Request: ${parsedRequestBody}`);    
     const { breeds = null, type = null, size = null, location = null, gender = null, age = null, color = null, pageSize = 20, simpified = true } = parsedRequestBody;
     // logging the request
     console.log(`Request: breeds: ${breeds}, type: ${type}, size: ${size}, location: ${location}, gender: ${gender}, age: ${age}, color: ${color}, pageSize: ${pageSize}`);
+    console.log(`Parsed Request: ${Object.keys(parsedRequestBody)}, ${Object.values(parsedRequestBody)}`);
     // also parse the page size from url: /api/pets?pageSize=20
     const url = new URL(request.url);
     const pageSizeFromUrl = url.searchParams.get('pageSize');

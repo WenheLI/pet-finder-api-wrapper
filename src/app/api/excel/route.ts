@@ -8,10 +8,10 @@ const client = new Client({ apiKey: process.env.API_KEY!, secret: process.env.SE
 export async function POST(request: Request) {
     // get data from the request
     let data = await request.text();
-    data = data.replaceAll('None', 'null');
     let parsedData = null;  
     try {
         parsedData = JSON.parse(data);
+        parsedData = JSON.parse(parsedData.replace(/'/g, '"').replace(/None/g, 'null').replace(/False/g, 'false').replace(/True/g, 'true').replace(/\\/g, ''));
     } catch (error) {
         console.error(`Error parsing request body: ${error}`);
     }
