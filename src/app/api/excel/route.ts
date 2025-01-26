@@ -90,7 +90,8 @@ export async function POST(request: Request) {
     if (!debugFlag) {
         //@ts-ignore
         const base64ExcelString = base64Excel.toString('base64');
-        return Response.json({ base64ExcelString });
+        // return a base64 string only without the json format
+        return new Response(base64ExcelString)
     }
     else {
         // return the excel file
